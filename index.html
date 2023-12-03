@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neighborhood Lookup</title>
+</head>
+<body>
+    <h1>Neighborhood Lookup</h1>
+    <div id="result">Loading...</div>
+
+    <script>
+        async function fetchNeighborhood() {
+            // Extracting lat and lon from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const lat = urlParams.get('lat');
+            const lon = urlParams.get('lon');
+            const username = 'Matthewjmiller07'; // Your GeoNames username
+
+            if (!lat || !lon) {
+                document.getElementById('result').innerText = 'Latitude or Longitude not provided';
+                return;
+            }
+
+            try {
+                // First API Call - Neighbourhood Information
+                let output = await getNeighborhoodInfo(lat, lon, username);
+
+                // Fallback API Call - Nearby Place Name Information
+                if (output === 'Not available') {
+                    output = await getNearbyPlaceName(lat, lon, username);
+                }
+
+                document.getElementById('result').innerText = `Neighborhood/City: ${output}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error occurred';
+            }
+        }
+
+        async function getNeighborhoodInfo(lat, lon, username) {
+            const apiUrl = `http://api.geonames.org/neighbourhoodJSON?lat=${lat}&lng=${lon}&username=${username}`;
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.neighbourhood) {
+                return data.neighbourhood.name || 'Not available';
+            } else if (data.city) {
+                return data.city || 'Not available';
+            }
+            return 'Not available';
+        }
+
+        async function getNearbyPlaceName(lat, lon, username) {
+            const fallbackUrl = `http://api.geonames.org/findNearbyPlaceNameJSON?lat=${lat}&lng=${lon}&username=${username}`;
+            const response = await fetch(fallbackUrl);
+            const fallbackData = await response.json();
+
+            if (fallbackData.geonames && fallbackData.geonames.length > 0) {
+                return fallbackData.geonames[0].name || 'Not available';
+            }
+            return 'Not available';
+        }
+
+        // Execute the function when the script loads
+        fetchNeighborhood();
+    </script>
+</body>
+</html>
