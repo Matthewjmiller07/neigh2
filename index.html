@@ -37,7 +37,7 @@
         }
 
         async function getNeighborhoodInfo(lat, lon, username) {
-            const apiUrl = `http://api.geonames.org/neighbourhoodJSON?lat=${lat}&lng=${lon}&username=${username}`;
+            const apiUrl = `https://api.geonames.org/neighbourhoodJSON?lat=${lat}&lng=${lon}&username=${username}`;
             const response = await fetch(apiUrl);
             const data = await response.json();
 
@@ -50,7 +50,7 @@
         }
 
         async function getNearbyPlaceName(lat, lon, username) {
-            const fallbackUrl = `http://api.geonames.org/findNearbyPlaceNameJSON?lat=${lat}&lng=${lon}&username=${username}`;
+            const fallbackUrl = `https://api.geonames.org/findNearbyPlaceNameJSON?lat=${lat}&lng=${lon}&username=${username}`;
             const response = await fetch(fallbackUrl);
             const fallbackData = await response.json();
 
