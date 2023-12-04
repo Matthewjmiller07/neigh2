@@ -9,13 +9,31 @@
 
     <script>
         async function fetchNeighborhood() {
-            // ... existing code ...
-
+            // Extracting lat and lon from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const lat = urlParams.get('lat');
+            const lon = urlParams.get('lon');
+            const username = 'Matthewjmiller07'; // Your GeoNames username
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/'; // CORS Proxy
+        
+            console.log(`Received lat: ${lat}, lon: ${lon}`); // Log latitude and longitude
+        
+            if (!lat || !lon) {
+                document.getElementById('result').innerText = 'Latitude or Longitude not provided';
+                return;
+            }
+        
             try {
+                // First API Call - Neighbourhood Information
                 let output = await getNeighborhoodInfo(lat, lon, username, corsProxy);
+                console.log(`Neighborhood Info: ${output}`); // Log the output from the first API call
+        
+                // Fallback API Call - Nearby Place Name Information
                 if (output === 'Not available') {
+                    console.log('Making fallback API call'); // Log fallback API call
                     output = await getNearbyPlaceName(lat, lon, username, corsProxy);
                 }
+        
                 document.getElementById('result').innerText = `Neighborhood/City: ${output}`;
             } catch (error) {
                 console.error('Error:', error);
