@@ -16,6 +16,8 @@
             const username = 'Matthewjmiller07'; // Your GeoNames username
             const corsProxy = 'https://cors-anywhere.herokuapp.com/'; // CORS Proxy
 
+            console.log(`Received lat: ${lat}, lon: ${lon}`); // Log latitude and longitude
+
             if (!lat || !lon) {
                 document.getElementById('result').innerText = 'Latitude or Longitude not provided';
                 return;
@@ -24,9 +26,11 @@
             try {
                 // First API Call - Neighbourhood Information
                 let output = await getNeighborhoodInfo(lat, lon, username, corsProxy);
+                console.log(`Neighborhood Info: ${output}`); // Log the output from the first API call
 
                 // Fallback API Call - Nearby Place Name Information
                 if (output === 'Not available') {
+                    console.log('Making fallback API call'); // Log fallback API call
                     output = await getNearbyPlaceName(lat, lon, username, corsProxy);
                 }
 
@@ -39,8 +43,11 @@
 
         async function getNeighborhoodInfo(lat, lon, username, corsProxy) {
             const apiUrl = `${corsProxy}https://api.geonames.org/neighbourhoodJSON?lat=${lat}&lng=${lon}&username=${username}`;
+            console.log(`Fetching Neighborhood Info from URL: ${apiUrl}`); // Log API URL
             const response = await fetch(apiUrl);
             const data = await response.json();
+
+            console.log('Neighborhood data:', data); // Log the received data
 
             if (data.neighbourhood) {
                 return data.neighbourhood.name || 'Not available';
@@ -52,8 +59,11 @@
 
         async function getNearbyPlaceName(lat, lon, username, corsProxy) {
             const fallbackUrl = `${corsProxy}https://api.geonames.org/findNearbyPlaceNameJSON?lat=${lat}&lng=${lon}&username=${username}`;
+            console.log(`Fetching Nearby Place Info from URL: ${fallbackUrl}`); // Log fallback API URL
             const response = await fetch(fallbackUrl);
             const fallbackData = await response.json();
+
+            console.log('Fallback data:', fallbackData); // Log the received fallback data
 
             if (fallbackData.geonames && fallbackData.geonames.length > 0) {
                 return fallbackData.geonames[0].name || 'Not available';
