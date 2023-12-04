@@ -42,27 +42,27 @@
         }
 
        async function getNeighborhoodInfo(lat, lon, username, corsProxy) {
-    const apiUrl = `${corsProxy}https://api.geonames.org/neighbourhoodJSON?lat=${lat}&lng=${lon}&username=${username}`;
-    console.log(`Fetching Neighborhood Info from URL: ${apiUrl}`);
-    const response = await fetch(apiUrl);
+        const apiUrl = `${corsProxy}https://api.geonames.org/neighbourhoodJSON?lat=${lat}&lng=${lon}&username=${username}`;
+        console.log(`Fetching Neighborhood Info from URL: ${apiUrl}`);
+        const response = await fetch(apiUrl);
 
-    const text = await response.text(); // Get the raw response text
-    console.log('Raw response:', text); // Log the raw response
+        const text = await response.text(); // Get the raw response text
+        console.log('Raw response:', text); // Log the raw response
+    
+        try {
+            const data = JSON.parse(text); // Try parsing the text as JSON
+            console.log('Neighborhood data:', data);
 
-    try {
-        const data = JSON.parse(text); // Try parsing the text as JSON
-        console.log('Neighborhood data:', data);
-
-        if (data.neighbourhood) {
-            return data.neighbourhood.name || 'Not available';
-        } else if (data.city) {
-            return data.city || 'Not available';
+            if (data.neighbourhood) {
+                return data.neighbourhood.name || 'Not available';
+            } else if (data.city) {
+                return data.city || 'Not available';
+            }
+        } catch (error) {
+            console.error('JSON parsing error:', error);
         }
-    } catch (error) {
-        console.error('JSON parsing error:', error);
+        return 'Not available';
     }
-    return 'Not available';
-}
 
 
         async function getNearbyPlaceName(lat, lon, username, corsProxy) {
